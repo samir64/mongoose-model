@@ -1,0 +1,16 @@
+{
+  "name": "mongoose-model",
+  "version": "0.0.0",
+  "description": "Define mongodb schema and documents by object oriented structure",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon main.js",
+    "start": "node main.js",
+    "test": "jest --detectOpenHandles"
+  },
+  "author": "Samir",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^6.8.2"
+  }
+}
