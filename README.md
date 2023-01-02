@@ -91,6 +91,38 @@ class Person extends Model {
 ```
 
 
+### Create new document
+
+```
+const { Model, Field } = require("mongoose-model");
+
+class Person extends Model {
+  static get modelName() {
+    return "person";
+  }
+
+  firstName = new Field({ isRequire: true, type: String });
+  lastName = new Field({ isRequire: true, type: String });
+
+  get fullName() {
+    return this.firstName + " " + this.lastName;
+  }
+
+  static getAllPersons() {
+    const agrPerson = this.collection.aggregate();
+
+    paginate(agrPerson, 0 /* Page number */, 10 /* Page size */);
+    return agrPerson.exec();
+  }
+}
+
+Person.create({firstName: "jack", lastName: "gonjishke"});
+Person.save().then(person => {
+  console.log(person);
+});
+```
+
+
 ### Sort result (by aggregation)
 
 ```
@@ -198,5 +230,32 @@ class Person extends Model {
 ```
 {
   "firstName|lastName": "gonjishke|gandomi"
+}
+```
+
+
+### Paginate result (by aggregation)
+
+```
+const { Model, Field, paginate } = require("mongoose-model");
+
+class Person extends Model {
+  static get modelName() {
+    return "person";
+  }
+
+  firstName = new Field({ isRequire: true, type: String });
+  lastName = new Field({ isRequire: true, type: String });
+
+  get fullName() {
+    return this.firstName + " " + this.lastName;
+  }
+
+  static getAllPersons() {
+    const agrPerson = this.collection.aggregate();
+
+    paginate(agrPerson, 0 /* Page number */, 10 /* Page size */);
+    return agrPerson.exec();
+  }
 }
 ```

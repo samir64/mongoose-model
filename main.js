@@ -117,9 +117,11 @@ startDatabase().then(async () => {
     static getAllPersons() {
       const agrPerson = this.collection.aggregate();
 
+      sort(agrPerson, "-lastName");
       filter(agrPerson, {
         "firstName|lastName": "Onj|and",
       });
+      paginate(agrPerson, 0, 10);
       return agrPerson.exec();
     }
   }
@@ -128,6 +130,7 @@ startDatabase().then(async () => {
   // const res = await model.save();
   // console.log(res.fullName);
 
-  const list = await Person.getAllPersons();
-  console.log(list.map(item => item.firstName + " " + item.lastName));
+  const result = await Person.getAllPersons();
+  const { items: list, ...info } = result[0];
+  console.log(info, list.map(item => item.firstName + " " + item.lastName));
 });
