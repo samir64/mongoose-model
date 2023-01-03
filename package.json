@@ -1,6 +1,6 @@
 {
   "name": "mongoosejs-model",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Define mongodb schema and documents by object oriented structure",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,14 @@
   },
   "author": "Samir",
   "license": "MIT",
+  "keywords": [
+    "javascript",
+    "mongoose",
+    "mongoosejs",
+    "model",
+    "oop",
+    "object-oriented"
+  ],
   "dependencies": {
     "mongoose": "^6.8.2"
   }
