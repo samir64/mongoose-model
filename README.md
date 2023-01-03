@@ -265,12 +265,12 @@ class Person extends Model {
 
 |   No. |   Symbol  |   Operator                |   Sample                          |
 |-------|-----------|---------------------------|-----------------------------------|
-|   1.  |   \|      |       Or                  |   {"firstName\|lastName": ...}    |
-|   1.  |    !      |       Not                 |   {"gender!": ...}                |
-|   1.  |    >      |       Greater             |   {"age>": ...}                   |
-|   1.  |    >=     |       Greater Or Equal    |   {"age>=": ...}                  |
-|   1.  |    >      |       Less                |   {"age<": ...}                   |
-|   1.  |    >=     |       Less Or Equal       |   {"age<=": ...}                  |
+|   1   |   \|      |       Or                  |   {"firstName\|lastName": ...}    |
+|   2   |    !      |       Not                 |   {"gender!": ...}                |
+|   3   |    >      |       Greater             |   {"age>": ...}                   |
+|   4   |    >=     |       Greater Or Equal    |   {"age>=": ...}                  |
+|   5   |    >      |       Less                |   {"age<": ...}                   |
+|   6   |    >=     |       Less Or Equal       |   {"age<=": ...}                  |
 
 
 * Value part:
@@ -278,7 +278,7 @@ class Person extends Model {
 
 |   No. |   Symbol  |   Operator                |   Sample                          |
 |-------|-----------|---------------------------|-----------------------------------|
-|   1.  |   \|      |       Or                  |   {...: "gonjishke\|gandomi"}     |
+|   1   |   \|      |       Or                  |   {...: "gonjishke\|gandomi"}     |
 
 
 + Mix:
