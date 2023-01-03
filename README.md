@@ -33,7 +33,23 @@ class Person extends Model {
 
 ### Define model as collection
 
-```
+<pre>
+const { Model, Field } = require("mongoosejs-model");
+
+class Person extends Model {
+  <b>static get modelName() {
+    return "person";
+  }</b>
+
+  firstName = new Field({ isRequire: true, type: String });
+  lastName = new Field({ isRequire: true, type: String });
+}
+</pre>
+
+
+### Define virtual fields
+
+<pre>
 const { Model, Field } = require("mongoosejs-model");
 
 class Person extends Model {
@@ -43,13 +59,17 @@ class Person extends Model {
 
   firstName = new Field({ isRequire: true, type: String });
   lastName = new Field({ isRequire: true, type: String });
+
+  <b>get fullName() {
+    return this.firstName + " " + this.lastName;
+  }</b>
 }
-```
+</pre>
 
 
-### Define virtual fields
+### Define collection methods
 
-```
+<pre>
 const { Model, Field } = require("mongoosejs-model");
 
 class Person extends Model {
@@ -63,13 +83,17 @@ class Person extends Model {
   get fullName() {
     return this.firstName + " " + this.lastName;
   }
+
+  <b>static getAllPersons() {
+    return this.collection.find({});
+  }</b>
 }
-```
+</pre>
 
 
-### Define collection methods
+### Create new document
 
-```
+<pre>
 const { Model, Field } = require("mongoosejs-model");
 
 class Person extends Model {
@@ -88,13 +112,18 @@ class Person extends Model {
     return this.collection.find({});
   }
 }
-```
+
+<b>Person.create({firstName: "jack", lastName: "gonjishke"});
+Person.save().then(person => {
+  console.log(person);
+});</b>
+</pre>
 
 
-### Create new document
+### Use aggregation in collection methods
 
-```
-const { Model, Field } = require("mongoosejs-model");
+<pre>
+const { Model, Field, <b>sort</b> } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -109,24 +138,21 @@ class Person extends Model {
   }
 
   static getAllPersons() {
-    const agrPerson = this.collection.aggregate();
-
-    paginate(agrPerson, 0 /* Page number */, 10 /* Page size */);
-    return agrPerson.exec();
+    <b>const agrPerson = this.collection.aggregate();
+    agrPerson.append({$match: {
+      firstName: "jack",
+    }});
+    
+    return agrPerson.exec();</b>
   }
 }
-
-Person.create({firstName: "jack", lastName: "gonjishke"});
-Person.save().then(person => {
-  console.log(person);
-});
-```
+</pre>
 
 
 ### Sort result (by aggregation)
 
-```
-const { Model, Field, sort } = require("mongoosejs-model");
+<pre>
+const { Model, Field, <b>sort</b> } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -143,16 +169,16 @@ class Person extends Model {
   static getAllPersons() {
     const agrPerson = this.collection.aggregate();
 
-    sort(agrPerson, "-lastName");
+    <b>sort(agrPerson, "-lastName");</b>
     return agrPerson.exec();
   }
 }
-```
+</pre>
 
 
 ### Filter result (by aggregation)
 
-```
+<pre>
 const { Model, Field, filter } = require("mongoosejs-model");
 
 class Person extends Model {
@@ -170,18 +196,18 @@ class Person extends Model {
   static getAllPersons() {
     const agrPerson = this.collection.aggregate();
 
-    filter(agrPerson, {
+    <b>filter(agrPerson, {
       lastName: "gonjishke"
-    });
+    });</b>
     return agrPerson.exec();
   }
 }
-```
+</pre>
 
 
 ### Complecated filters
 
-```
+<pre>
 const { Model, Field, filter } = require("mongoosejs-model");
 
 class Person extends Model {
@@ -200,12 +226,12 @@ class Person extends Model {
     const agrPerson = this.collection.aggregate();
 
     filter(agrPerson, {
-      "firstName|lastName": "gonjishke|gandomi",
+      <b>"firstName|lastName": "gonjishke|gandomi",</b>
     });
     return agrPerson.exec();
   }
 }
-```
+</pre
 
 #### Filter operators
 
@@ -236,7 +262,7 @@ class Person extends Model {
 
 ### Paginate result (by aggregation)
 
-```
+<pre>
 const { Model, Field, paginate } = require("mongoosejs-model");
 
 class Person extends Model {
@@ -254,8 +280,8 @@ class Person extends Model {
   static getAllPersons() {
     const agrPerson = this.collection.aggregate();
 
-    paginate(agrPerson, 0 /* Page number */, 10 /* Page size */);
+    <b>paginate(agrPerson, 0 /* Page number */, 10 /* Page size */);</b>
     return agrPerson.exec();
   }
 }
-```
+</pre>
