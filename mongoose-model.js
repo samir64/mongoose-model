@@ -130,7 +130,7 @@ module.exports.Field = class {
   #check = data => data.next();
 
   constructor({ isRequire, def, type, isArray, check } = {}) {
-    if (![String, Number, Boolean, Date, Object].includes(type) && !!type && !(type.prototype instanceof module.exports.Model)) {
+    if (![String, Number, Boolean, Date, Schema.Types.ObjectId, Object].includes(type) && !!type && !(type.prototype instanceof module.exports.Model)) {
       throw "type_error";
     }
 
