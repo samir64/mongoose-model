@@ -10,17 +10,20 @@
 ```
 const mongoose = require("mongoose");
 
-mongoose.connect(uri)
-  .then(() => {
-    console.log("💪 connected to DB.");
-    resolve();
-  })
-  .catch(err => {
-    console.log("DB connection error:", err);
-    startDatabase();
-    reject(err);
+const startDatabase = () => {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(uri)
+      .then(() => {
+        console.log("💪 connected to DB.");
+        resolve();
+      })
+      .catch(err => {
+        console.log("DB connection error:", err);
+        startDatabase();
+        reject(err);
+      });
   });
-
+};
 ```
 
 ```
