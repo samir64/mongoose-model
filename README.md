@@ -92,6 +92,31 @@ class Person extends Model {
 </pre>
 
 
+### Use collection methods
+
+<pre>
+const { Model, Field } = require("mongoosejs-model");
+
+class Person extends Model {
+  static get modelName() {
+    return "person";
+  }
+
+  firstName = new Field({ isRequire: true, type: String });
+  lastName = new Field({ isRequire: true, type: String });
+
+  get fullName() {
+    return this.firstName + " " + this.lastName;
+  }
+}
+
+<b>Person.collection.findOne({
+  firstName: "jack",
+  lastName: "gonjishke"
+});</b>
+</pre>
+
+
 ### Define collection methods
 
 <pre>
