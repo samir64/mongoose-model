@@ -6,6 +6,25 @@
 
 ## Use:
 
+### Connect to databse
+```
+const mongoose = require("mongoose");
+const { init } = require("mongoosejs-model");
+init(mongoose);
+
+mongoose.connect(uri)
+  .then(() => {
+    console.log("💪 connected to DB.");
+    resolve();
+  })
+  .catch(err => {
+    console.log("DB connection error:", err);
+    startDatabase();
+    reject(err);
+  });
+
+```
+
 ### Define field
 
 ```

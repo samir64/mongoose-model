@@ -1,7 +1,9 @@
-const { Field, Model, sort, filter, paginate } = require("./mongoose-model");
 const mongoose = require("mongoose");
+const { Field, Model, sort, filter, paginate, init } = require("./mongoose-model");
 
 const uri = "mongodb://mdb/test";
+
+init(mongoose);
 
 const startDatabase = () => {
   return new Promise((resolve, reject) => {

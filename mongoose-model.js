@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const { model, Schema } = mongoose;
+// const mongoose = require("mongoose");
+// let mongoose;
+let model, Schema;
 
 const mapFilterCondition = (key, condition = "=") => value => {
   const checkType = [
@@ -367,4 +368,10 @@ module.exports.paginate = (aggregate, page = 0, pageSize = 25) => {
   //   items: [],
   // };
   return aggregate;
+};
+
+module.exports.init = mngs => {
+  // mongoose = mngs;
+  model = mngs.model;
+  Schema = mngs.Schema;
 };
