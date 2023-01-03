@@ -256,29 +256,29 @@ class Person extends Model {
     return agrPerson.exec();
   }
 }
-</pre
+</pre>
 
 #### Filter operators
 
 * Key part:
 
 
-|   No. |   Symbol  |   Operator                |   Sample                          |
-|-------|-----------|---------------------------|-----------------------------------|
-|   1   |   \|      |       Or                  |   {"firstName\|lastName": ...}    |
-|   2   |    !      |       Not                 |   {"gender!": ...}                |
-|   3   |    >      |       Greater             |   {"age>": ...}                   |
-|   4   |    >=     |       Greater Or Equal    |   {"age>=": ...}                  |
-|   5   |    >      |       Less                |   {"age<": ...}                   |
-|   6   |    >=     |       Less Or Equal       |   {"age<=": ...}                  |
+| No.   | Symbol    | Operator          | Sample                       |
+| ----- | --------- | ----------------- | ---------------------------- |
+| 1     | \|        | Or                | {"firstName\|lastName": ...} |
+| 2     | !         | Not               | {"gender!": ...}             |
+| 3     | >         | Greater           | {"age>": ...}                |
+| 4     | >=        | Greater Or Equal  | {"age>=": ...}               |
+| 5     | >         | Less              | {"age<": ...}                |
+| 6     | >=        | Less Or Equal     | {"age<=": ...}               |
 
 
 * Value part:
 
 
-|   No. |   Symbol  |   Operator                |   Sample                          |
-|-------|-----------|---------------------------|-----------------------------------|
-|   1   |   \|      |       Or                  |   {...: "gonjishke\|gandomi"}     |
+| No. | Symbol  | Operator   | Sample                       |
+| --- | ------- | ---------- | ---------------------------- |
+| 1   | \|      | Or         | {...: "gonjishke\|gandomi"}  |
 
 
 + Mix:
