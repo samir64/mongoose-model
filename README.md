@@ -2,14 +2,14 @@
 
 ## Installation instruction:
 
-`npm install mongoose-model`
+`npm install mongoosejs-model`
 
 ## Use:
 
 ### Define field
 
 ```
-const { Field } = require("mongoose-model");
+const { Field } = require("mongoosejs-model");
 let field1 = new Field({
   isRequire: true,
   isArray: true,
@@ -22,7 +22,7 @@ let field1 = new Field({
 ### Define model as subdocument:
 
 ```
-const { Model, Field } = require("mongoose-model");
+const { Model, Field } = require("mongoosejs-model");
 
 class Person extends Model {
   firstName = new Field({ isRequire: true, type: String });
@@ -34,7 +34,7 @@ class Person extends Model {
 ### Define model as collection
 
 ```
-const { Model, Field } = require("mongoose-model");
+const { Model, Field } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -50,7 +50,7 @@ class Person extends Model {
 ### Define virtual fields
 
 ```
-const { Model, Field } = require("mongoose-model");
+const { Model, Field } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -70,7 +70,7 @@ class Person extends Model {
 ### Define collection methods
 
 ```
-const { Model, Field } = require("mongoose-model");
+const { Model, Field } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -94,7 +94,7 @@ class Person extends Model {
 ### Create new document
 
 ```
-const { Model, Field } = require("mongoose-model");
+const { Model, Field } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -126,7 +126,7 @@ Person.save().then(person => {
 ### Sort result (by aggregation)
 
 ```
-const { Model, Field, sort } = require("mongoose-model");
+const { Model, Field, sort } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -153,7 +153,7 @@ class Person extends Model {
 ### Filter result (by aggregation)
 
 ```
-const { Model, Field, filter } = require("mongoose-model");
+const { Model, Field, filter } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -182,7 +182,7 @@ class Person extends Model {
 ### Complecated filters
 
 ```
-const { Model, Field, filter } = require("mongoose-model");
+const { Model, Field, filter } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
@@ -237,7 +237,7 @@ class Person extends Model {
 ### Paginate result (by aggregation)
 
 ```
-const { Model, Field, paginate } = require("mongoose-model");
+const { Model, Field, paginate } = require("mongoosejs-model");
 
 class Person extends Model {
   static get modelName() {
