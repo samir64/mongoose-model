@@ -9,8 +9,6 @@
 ### Connect to databse
 ```
 const mongoose = require("mongoose");
-const { init } = require("mongoosejs-model");
-init(mongoose);
 
 mongoose.connect(uri)
   .then(() => {
@@ -23,6 +21,11 @@ mongoose.connect(uri)
     reject(err);
   });
 
+```
+
+```
+const { init } = require("mongoosejs-model");
+init(require("mongoose"));
 ```
 
 ### Define field
