@@ -207,7 +207,7 @@ module.exports.Model = class {
     let thisFields = {};
 
     const getFields = obj => {
-      let fields = module.exports.Model.#getModelFields;
+      let fields = module.exports.Model.#getModelFields(this);
 
       if (!!fields) {
         return fields;
@@ -232,6 +232,11 @@ module.exports.Model = class {
             };
           }
         }
+      });
+
+      module.exports.Model.#modelFields.push({
+        type: this,
+        fields,
       });
 
       return fields;
