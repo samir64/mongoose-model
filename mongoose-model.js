@@ -187,7 +187,12 @@ module.exports.Field = class {
 
 module.exports.Model = class {
   static get modelName() { };
-  static models = {};
+  static #models = {};
+  static #modelFields = [];
+
+  static #getModelFields(model) {
+    return module.exports.Model.#modelFields.find(mf => mf.type === type)?.fields;
+  }
 
   static create(fields) {
     if (!!this.modelName) {
@@ -202,7 +207,13 @@ module.exports.Model = class {
     let thisFields = {};
 
     const getFields = obj => {
-      const fields = {};
+      let fields = module.exports.Model.#getModelFields;
+
+      if (!!fields) {
+        return fields;
+      } else {
+        fields = {};
+      }
 
       const props = Object.getOwnPropertyDescriptors(obj);
       Object.entries(props).forEach(([key, prop]) => {
@@ -255,12 +266,12 @@ module.exports.Model = class {
 
       schema.loadClass(this);
 
-      if (!!this.modelName && !this.models[this.modelName]) {
-        this.models[this.modelName] = model(this.modelName, schema);
+      if (!!this.modelName && !module.exports.Model.#models[this.modelName]) {
+        module.exports.Model.#models[this.modelName] = model(this.modelName, schema);
       }
 
       if (!!this.modelName) {
-        return this.models[this.modelName];
+        return module.exports.Model.#models[this.modelName];
       } else {
         return schema;
       }
@@ -271,7 +282,7 @@ module.exports.Model = class {
 
   static get collection() {
     if (!!this.modelName) {
-      return this.models[this.modelName] ?? this.make();
+      return module.exports.Model.#models[this.modelName] ?? this.make();
     }
   }
 }
