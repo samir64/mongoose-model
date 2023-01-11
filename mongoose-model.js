@@ -213,6 +213,11 @@ module.exports.Model = class {
         return fields;
       } else {
         fields = {};
+
+        module.exports.Model.#modelFields.push({
+          type: this,
+          fields,
+        });
       }
 
       const props = Object.getOwnPropertyDescriptors(obj);
@@ -232,11 +237,6 @@ module.exports.Model = class {
             };
           }
         }
-      });
-
-      module.exports.Model.#modelFields.push({
-        type: this,
-        fields,
       });
 
       return fields;
