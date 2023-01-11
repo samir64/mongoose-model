@@ -111,6 +111,7 @@ startDatabase().then(async () => {
 
     firstName = new Field({ isRequire: true, type: String });
     lastName = new Field({ isRequire: true, type: String });
+    // relatedTo = new Field({ type: Person });
 
     get fullName() {
       return this.firstName + " " + this.lastName;
@@ -128,7 +129,13 @@ startDatabase().then(async () => {
     }
   }
 
-  // const model = Person.create({ firstName: "joe", lastName: "Gandomi" });
+  // const model = Person.create({
+  //   firstName: "joe", lastName: "Gandomi", relatedTo: {
+  //     firstName: "jack", lastName: "Gonjishke", relatedTo: {
+  //       firstName: "jim", lastName: "karry"
+  //     }
+  //   }
+  // });
   // const res = await model.save();
   // console.log(res.fullName);
 

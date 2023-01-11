@@ -190,8 +190,8 @@ module.exports.Model = class {
   static #models = {};
   static #modelFields = [];
 
-  static #getModelFields(model) {
-    return module.exports.Model.#modelFields.find(mf => mf.type === type)?.fields;
+  static #getModelFields(type) {
+    return module.exports.Model.#modelFields.find(mf => mf.type === type)?.schema;
   }
 
   static create(fields) {
@@ -206,7 +206,7 @@ module.exports.Model = class {
   static make() {
     let thisFields = {};
 
-    const getFields = obj => {
+    const getFields = (obj, schema) => {
       let fields = module.exports.Model.#getModelFields(this);
 
       if (!!fields) {
@@ -216,6 +216,7 @@ module.exports.Model = class {
 
         module.exports.Model.#modelFields.push({
           type: this,
+          schema,
           fields,
         });
       }
@@ -251,7 +252,7 @@ module.exports.Model = class {
         fn += fieldName;
 
         if (!field.check) {
-          checkFields(schema, field, fn);
+          // checkFields(schema, field, fn);
         } else {
           schema.pre("validate", function (next) {
             const check = field.check.bind(this);
@@ -263,9 +264,10 @@ module.exports.Model = class {
     }
 
     const load = () => {
-      thisFields = getFields(new this());
+      const schema = new Schema({}, { timestamps: true });
+      thisFields = getFields(new this(), schema);
 
-      const schema = new Schema(thisFields, { timestamps: true });
+      schema.add(thisFields);
 
       checkFields(schema, thisFields);
 
