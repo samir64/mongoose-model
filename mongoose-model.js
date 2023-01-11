@@ -227,7 +227,12 @@ module.exports.Model = class {
         if (field instanceof module.exports.Field) {
           if (field.type.prototype instanceof module.exports.Model) {
             const instance = new field.type();
-            fields[key] = getFields(instance);
+            fields[key] = {
+              type: field.isArray ? [getFields(instance)] : getFields(instance),
+              default: field.def,
+              required: field.isRequire,
+              check: field.check,
+            };
           } else {
             const type = field.type === Object ? Schema.Types.Mixed : field.type;
             fields[key] = {
