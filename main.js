@@ -109,9 +109,25 @@ startDatabase().then(async () => {
       return "person";
     }
 
-    firstName = new Field({ isRequire: true, type: String });
+    firstName = new Field({
+      isRequire: true, type: String, check: data => {
+        data.model.lastName += (data.value === "jack") ? "*" : "|";
+        data.next();
+      }
+    });
     lastName = new Field({ isRequire: true, type: String });
     relatedTo = new Field({ type: Person });
+    cnt = new Field({
+      type: Number,
+      isRequire: true,
+      isUnique: true,
+      check: async data => {
+        const lastCnt = await Person.collection.findOne({}, { cnt: 1 }, { sort: { cnt: -1 } }) ?? { cnt: 0 };
+        console.log(data.name, lastCnt.cnt);
+        data.model.cnt = lastCnt.cnt + 1;
+        data.next();
+      },
+    });
 
     get fullName() {
       return this.firstName + " " + this.lastName;

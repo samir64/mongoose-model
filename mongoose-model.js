@@ -125,18 +125,23 @@ const limit_offset = (aggregate, itemIndex, page, fields, pageSize) => {
 module.exports.Field = class {
   #type = Schema.Types.Mixed;
   #isRequire = false;
+  #isUnique = false;
   #isArray = false;
   #def;
   #value;
   #check = data => data.next();
 
-  constructor({ isRequire, def, type, isArray, check } = {}) {
+  constructor({ isRequire, isUnique, def, type, isArray, check } = {}) {
     if (![String, Number, Boolean, Date, Schema.Types.ObjectId, Object].includes(type) && !!type && !(type.prototype instanceof module.exports.Model)) {
       throw "type_error";
     }
 
     if (isRequire !== undefined) {
       this.#isRequire = isRequire;
+    }
+
+    if (isUnique !== undefined) {
+      this.#isUnique = isUnique;
     }
 
     if (def !== undefined) {
@@ -162,6 +167,10 @@ module.exports.Field = class {
 
   get isRequire() {
     return this.#isRequire;
+  }
+
+  get isUnique() {
+    return this.#isUnique;
   }
 
   get def() {
@@ -231,6 +240,7 @@ module.exports.Model = class {
               type: field.isArray ? [getFields(instance)] : getFields(instance),
               default: field.def,
               required: field.isRequire,
+              unique: field.isUnique,
               check: field.check,
             };
           } else {
