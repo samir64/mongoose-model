@@ -49,7 +49,7 @@ startDatabase().then(async () => {
   //   var6 = new Field({
   //     type: String, def: "var6-val", check: data => {
   //       console.log("Check for sub document's field", data);
-  //       data.next();
+  //       next();
   //     }
   //   });
 
@@ -66,10 +66,10 @@ startDatabase().then(async () => {
   //   var7 = new Field({
   //     type: String, check: data => {
   //       console.log(data);
-  //       if (data.value !== "hasan") {
-  //         data.model.var7 = data.name;
+  //       if (value !== "hasan") {
+  //         model.var7 = name;
   //       }
-  //       data.next();
+  //       next();
   //     }
   //   });
 
@@ -110,9 +110,9 @@ startDatabase().then(async () => {
     }
 
     firstName = new Field({
-      isRequire: true, type: String, check: data => {
-        data.model.lastName += (data.value === "jack") ? "*" : "|";
-        data.next();
+      isRequire: true, type: String, check: (next, path, value, model) => {
+        model.lastName += (value === "jack") ? "*" : "|";
+        next();
       }
     });
     lastName = new Field({ isRequire: true, type: String });
@@ -121,11 +121,11 @@ startDatabase().then(async () => {
       type: Number,
       isRequire: true,
       isUnique: true,
-      check: async data => {
+      check: async (next, path, value, model) => {
         const lastCnt = await Person.collection.findOne({}, { cnt: 1 }, { sort: { cnt: -1 } }) ?? { cnt: 0 };
-        console.log(data.name, lastCnt.cnt);
-        data.model.cnt = lastCnt.cnt + 1;
-        data.next();
+        console.log(path, value, lastCnt.cnt);
+        model.cnt = lastCnt.cnt + 1;
+        next();
       },
     });
 

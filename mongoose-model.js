@@ -2,6 +2,7 @@
 // let mongoose;
 const pluralize = require("pluralize");
 const caseConverter = require("js-convert-case");
+const md5 = require("md5");
 let model, Schema;
 
 const mapFilterCondition = (key, condition = "=") => value => {
@@ -131,7 +132,8 @@ module.exports.Field = class {
   #isArray = false;
   #def;
   #value;
-  #check = data => data.next();
+  // #check = next => next();
+  #check;
 
   constructor({ isRequire, isUnique, def, type, isArray, check } = {}) {
     if (![String, Number, Boolean, Date, Schema.Types.ObjectId, Object].includes(type) && !!type && !(type.prototype instanceof module.exports.Model)) {
@@ -201,8 +203,8 @@ module.exports.Model = class {
   static #models = {};
   static #modelFields = [];
 
-  static #getModelFields(type) {
-    return module.exports.Model.#modelFields.find(mf => mf.type === type)?.schema;
+  static #getModelFields(id) {
+    return module.exports.Model.#modelFields.find(mf => mf.id === id)?.fields;
   }
 
   static create(fields) {
@@ -218,7 +220,7 @@ module.exports.Model = class {
     let thisFields = {};
 
     const getFields = (obj, schema) => {
-      let fields = module.exports.Model.#getModelFields(this);
+      let fields = module.exports.Model.#getModelFields(md5(JSON.stringify(obj)));
 
       if (!!fields) {
         return fields;
@@ -226,7 +228,7 @@ module.exports.Model = class {
         fields = {};
 
         module.exports.Model.#modelFields.push({
-          type: this,
+          id: md5(JSON.stringify(obj)),
           schema,
           fields,
         });
@@ -238,8 +240,13 @@ module.exports.Model = class {
         if (field instanceof module.exports.Field) {
           if (field.type.prototype instanceof module.exports.Model) {
             const instance = new field.type();
+            const fieldSchema = new Schema({}, { timestamps: true });
+            thisFields = getFields(instance, fieldSchema);
+
+            fieldSchema.add(thisFields);
+
             fields[key] = {
-              type: field.isArray ? [getFields(instance)] : getFields(instance),
+              type: field.isArray ? [fieldSchema] : fieldSchema,
               default: field.def,
               required: field.isRequire,
               unique: field.isUnique,
@@ -273,8 +280,9 @@ module.exports.Model = class {
         } else {
           schema.pre("validate", function (next) {
             const check = field.check.bind(this);
-            let value = fn.split(".").reduce((res, cur) => res[cur], this);
-            check({ model: this, value, next, name: fn });
+            let value = fn.split(".").reduce((res, cur) => res[cur], this.toJSON());
+            // check({ model: this, value, next, name: fn });
+            check(next, fn, value, this);
           });
         }
       });
