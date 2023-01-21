@@ -1,5 +1,3 @@
-// const mongoose = require("mongoose");
-// let mongoose;
 const pluralize = require("pluralize");
 const caseConverter = require("js-convert-case");
 const md5 = require("md5");
@@ -132,7 +130,6 @@ module.exports.Field = class {
   #isArray = false;
   #def;
   #value;
-  // #check = next => next();
   #check;
 
   constructor({ isRequire, isUnique, def, type, isArray, check } = {}) {
@@ -245,6 +242,8 @@ module.exports.Model = class {
 
             fieldSchema.add(thisFields);
 
+            fieldSchema.loadClass(field.type);
+
             fields[key] = {
               type: field.isArray ? [fieldSchema] : fieldSchema,
               default: field.def,
@@ -275,13 +274,10 @@ module.exports.Model = class {
         }
         fn += fieldName;
 
-        if (!field.check) {
-          // checkFields(schema, field, fn);
-        } else {
+        if (!!field.check) {
           schema.pre("validate", function (next) {
             const check = field.check.bind(this);
             let value = fn.split(".").reduce((res, cur) => res[cur], this.toJSON());
-            // check({ model: this, value, next, name: fn });
             check(next, fn, value, this);
           });
         }
