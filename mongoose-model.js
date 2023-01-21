@@ -1,5 +1,7 @@
 // const mongoose = require("mongoose");
 // let mongoose;
+const pluralize = require("pluralize");
+const caseConverter = require("js-convert-case");
 let model, Schema;
 
 const mapFilterCondition = (key, condition = "=") => value => {
@@ -289,7 +291,7 @@ module.exports.Model = class {
       schema.loadClass(this);
 
       if (!!this.modelName && !module.exports.Model.#models[this.modelName]) {
-        module.exports.Model.#models[this.modelName] = model(this.modelName, schema);
+        module.exports.Model.#models[this.modelName] = model(caseConverter.toKebabCase(pluralize(this.modelName)), schema);
       }
 
       if (!!this.modelName) {
