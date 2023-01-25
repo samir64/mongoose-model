@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Field, Model, sort, filter, paginate, init } = require("./mongoose-model");
+const { Model, Field, Enum, sort, filter, paginate, init } = require("./mongoose-model");
 
 const uri = "mongodb://mdb/test";
 
@@ -109,8 +109,16 @@ startDatabase().then(async () => {
       return "person";
     }
 
+    gender = new Enum({
+      def: ["MALE", "FEMALE"],
+      keys: ["MALE", "FEMALE"],
+      multi: true
+    });
+
     firstName = new Field({
-      isRequire: true, type: String, check: (next, path, value, model) => {
+      isRequire: true,
+      type: String,
+      check: (next, path, value, model) => {
         model.lastName += (value === "jack") ? "*" : "|";
         next();
       }
@@ -154,6 +162,11 @@ startDatabase().then(async () => {
   });
   const res = await model.save();
   console.log(res.fullName);
+
+  console.log("Gender Value:", res.gender);
+  console.log("Gender Has Key 'FEMALE':", res.genderHasKey("FEMALE"));
+  console.log("Gender Check 'FEMALE': ", res.genderCheck("FEMALE"));
+  console.log("Gender Compare 'FEMALE': ", res.genderCompare("FEMALE"));
 
   const result = await Person.getAllPersons();
   const { items: list, ...info } = result[0];

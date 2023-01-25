@@ -2,6 +2,7 @@ const pluralize = require("pluralize");
 const caseConverter = require("js-convert-case");
 const md5 = require("md5");
 let model, Schema;
+let Enum;
 
 const mapFilterCondition = (key, condition = "=") => value => {
   const checkType = [
@@ -167,11 +168,11 @@ module.exports.Field = class {
   }
 
   get isRequire() {
-    return this.#isRequire;
+    return !!this.#isRequire;
   }
 
   get isUnique() {
-    return this.#isUnique;
+    return !!this.#isUnique;
   }
 
   get def() {
@@ -179,7 +180,7 @@ module.exports.Field = class {
   }
 
   get isArray() {
-    return this.#isArray;
+    return !!this.#isArray;
   }
 
   get value() {
@@ -194,6 +195,56 @@ module.exports.Field = class {
     return this.#check;
   }
 }
+
+module.exports.Enum = class extends this.Field {
+  #keys = [];
+
+  constructor({ def, multi, keys, check } = {}) {
+    super({
+      isRequire: true,
+      def: !!multi ? (def ?? []) : def,
+      type: String,
+      isArray: multi,
+      check,
+    });
+
+    this.#keys = keys.map(k => caseConverter.toUpperCase(caseConverter.toSnakeCase(k)));
+  }
+
+  get multi() {
+    return !!super.isArray;
+  }
+
+  get keys() {
+    return this.#keys;
+  }
+
+  get methods() {
+    return {
+      hasKey: (...key) => {
+        if (this.multi) {
+          return key.every(item => this.#keys.includes(item));
+        } else {
+          return this.#keys.includes(key[0]);
+        }
+      },
+      check: (...value) => {
+        if (this.multi) {
+          return value.every(item => this.value.includes(item));
+        } else {
+          return this.value === value[0];
+        }
+      },
+      compare: (...value) => {
+        if (this.multi) {
+          return value.every(item => this.value.includes(item)) && this.value.every(item => value.includes(item));
+        } else {
+          return this.value === value[0];
+        }
+      },
+    }
+  }
+};
 
 module.exports.Model = class {
   static get modelName() { };
@@ -253,12 +304,27 @@ module.exports.Model = class {
             };
           } else {
             const type = field.type === Object ? Schema.Types.Mixed : field.type;
-            fields[key] = {
-              type: field.isArray ? [type] : type,
-              default: field.def,
-              required: field.isRequire,
-              check: field.check,
-            };
+
+            if (field instanceof module.exports.Enum) {
+              fields[key] = {
+                type: field.isArray ? [type] : type,
+                default: field.def,
+                required: field.isRequire,
+                check: field.check,
+                enum: field instanceof module.exports.Enum ? field.keys : undefined,
+              };
+
+              for (const [methodName, method] of Object.entries(field.methods)) {
+                schema.methods[key + caseConverter.toPascalCase(methodName)] = method.bind(field);
+              }
+            } else {
+              fields[key] = {
+                type: field.isArray ? [type] : type,
+                default: field.def,
+                required: field.isRequire,
+                check: field.check,
+              };
+            }
           }
         }
       });
@@ -411,6 +477,24 @@ module.exports.paginate = (aggregate, page = 0, pageSize = 25) => {
 
 module.exports.init = mngs => {
   // mongoose = mngs;
+  Enum = class extends mngs.SchemaType {
+    #has = () => false;
+
+    constructor(key, options) {
+      super(key, options, 'String');
+      this.#has = options.has;
+    }
+
+    has(value) {
+      return this.#has(value);
+    }
+
+    cast(value) {
+      return value;
+    }
+  }
+
+  mngs.Schema.Types.Enum = Enum;
   model = mngs.model;
   Schema = mngs.Schema;
 };

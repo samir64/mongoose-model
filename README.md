@@ -43,6 +43,26 @@ let field1 = new Field({
 });
 ```
 
+### Define enum
+
+```
+const { Enum } = require("mongoosejs-model");
+let field1 = new Enum({
+  multi: false,
+  def: "E1",
+  keys: ["E1", "E2"],
+});
+```
+
+```
+const { Enum } = require("mongoosejs-model");
+let field2 = new Enum({
+  multi: true,
+  def: ["E1"],
+  keys: ["E1", "E2"],
+});
+```
+
 
 ### Define model as subdocument:
 
@@ -54,6 +74,42 @@ class Person extends Model {
   lastName = new Field({ isRequire: true, type: String });
 }
 ```
+
+
+### Model enum methods:
+
+<pre>
+const { Model, Field, Enum } = require("mongoosejs-model");
+
+class Person extends Model {
+  <b>gender = new Enum({ keys: ["MALE", "FEMALE"] });</b>
+  <b>properties = new Enum({ keys: ["CAR", "HOUSE"], multi: true });</b>
+  firstName = new Field({ isRequire: true, type: String });
+  lastName = new Field({ isRequire: true, type: String });
+}
+
+<b>Person.create({ firstName: "hasan", lastName: "Kachal", gender: "MALE", properies: ["CAR", "HOUSE"] });</b>
+
+<b>genderHasKey("MALE"); // Returns 'true'</b>
+<b>genderHasKey("FEMALE"); // Returns 'true'</b>
+
+<b>genderCheck("FEMALE"); // Returns 'false'</b>
+<b>genderCheck("MALE"); // Returns 'true'</b>
+
+<b>genderCompare("FEMALE"); // Returns 'false'</b>
+<b>genderCompare("MALE"); // Returns 'true'</b>
+
+
+<b>propertiesHasKey("CAR"); // Returns 'true'</b>
+<b>propertiesHasKey("HOUSE"); // Returns 'true'</b>
+
+<b>propertiesCheck("HOUSE"); // Returns 'true'</b>
+<b>propertiesCheck("CAR"); // Returns 'true'</b>
+
+<b>propertiesCompare("HOUSE"); // Returns 'false'</b>
+<b>propertiesCompare("CAR"); // Returns 'false'</b>
+<b>propertiesCompare("HOUSE", "CAR"); // Returns 'true'</b>
+</pre>
 
 
 ### Define model as collection
