@@ -110,10 +110,15 @@ startDatabase().then(async () => {
     }
 
     gender = new Enum({
-      def: ["MALE", "FEMALE"],
+      def: "MALE",
       keys: ["MALE", "FEMALE"],
-      multi: true
+      multi: false
     });
+
+    type = new Enum({
+      multi: true,
+      keys: ["WORKER", "EMPLOYER"]
+    })
 
     firstName = new Field({
       isRequire: true,
@@ -153,13 +158,42 @@ startDatabase().then(async () => {
     }
   }
 
-  const model = Person.create({
-    firstName: "joe", lastName: "Gandomi", relatedTo: {
-      firstName: "jack", lastName: "Gonjishke", relatedTo: {
-        firstName: "jim", lastName: "karry"
+  class Worker extends Person {
+    constructor() {
+      super();
+
+    }
+
+    job = new Field({
+      isRequire: true,
+      type: String,
+    });
+
+    get check() {
+      return function (next) {
+        if (!this.typeCheck("WORKER")) {
+          this.type.push("WORKER");
+        }
+
+        next();
       }
     }
-  });
+  }
+
+  // const model = Person.create({
+  //   firstName: "joe", lastName: "Gandomi", relatedTo: {
+  //     firstName: "jack", lastName: "Gonjishke", relatedTo: {
+  //       firstName: "jim", lastName: "karry"
+  //     }
+  //   }
+  // });
+  // const model = Worker.create({
+  //   firstName: "hasan",
+  //   lastName: "kachal",
+  //   job: "kilid saaz",
+  //   type: ["EMPLOYER"]
+  // });
+  const model = await Worker.collection.findOne({ _id: "63d2c59c2cd234cbcbee13b8" });
   const res = await model.save();
   console.log(res.fullName);
 

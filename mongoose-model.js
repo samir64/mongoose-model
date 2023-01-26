@@ -221,25 +221,25 @@ module.exports.Enum = class extends this.Field {
 
   get methods() {
     return {
-      hasKey: (...key) => {
+      hasKey: () => (...key) => {
         if (this.multi) {
           return key.every(item => this.#keys.includes(item));
         } else {
           return this.#keys.includes(key[0]);
         }
       },
-      check: (...value) => {
-        if (this.multi) {
-          return value.every(item => this.value.includes(item));
+      check: (field, fieldName) => function (...value) {
+        if (field.multi) {
+          return value.every(item => this[fieldName].includes(item));
         } else {
-          return this.value === value[0];
+          return this[fieldName] === value[0];
         }
       },
-      compare: (...value) => {
-        if (this.multi) {
-          return value.every(item => this.value.includes(item)) && this.value.every(item => value.includes(item));
+      compare: (field, fieldName) => function (...value) {
+        if (field.multi) {
+          return value.every(item => this[fieldName].includes(item)) && this[fieldName].every(item => value.includes(item));
         } else {
-          return this.value === value[0];
+          return this[fieldName] === value[0];
         }
       },
     }
@@ -250,6 +250,9 @@ module.exports.Model = class {
   static get modelName() { };
   static #models = {};
   static #modelFields = [];
+  get check() {
+    return next => next();
+  }
 
   static #getModelFields(id) {
     return module.exports.Model.#modelFields.find(mf => mf.id === id)?.fields;
@@ -289,6 +292,8 @@ module.exports.Model = class {
           if (field.type.prototype instanceof module.exports.Model) {
             const instance = new field.type();
             const fieldSchema = new Schema({}, { timestamps: true });
+
+            fieldSchema.pre("save", instance.check);
             thisFields = getFields(instance, fieldSchema);
 
             fieldSchema.add(thisFields);
@@ -303,6 +308,8 @@ module.exports.Model = class {
               check: field.check,
             };
           } else {
+            schema.pre("save", obj.check);
+
             const type = field.type === Object ? Schema.Types.Mixed : field.type;
 
             if (field instanceof module.exports.Enum) {
@@ -311,11 +318,11 @@ module.exports.Model = class {
                 default: field.def,
                 required: field.isRequire,
                 check: field.check,
-                enum: field instanceof module.exports.Enum ? field.keys : undefined,
+                enum: field.keys,
               };
 
               for (const [methodName, method] of Object.entries(field.methods)) {
-                schema.methods[key + caseConverter.toPascalCase(methodName)] = method.bind(field);
+                schema.methods[key + caseConverter.toPascalCase(methodName)] = method(field, key);
               }
             } else {
               fields[key] = {
