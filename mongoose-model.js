@@ -250,8 +250,8 @@ module.exports.Model = class {
   static get modelName() { };
   static #models = {};
   static #modelFields = [];
-  get check() {
-    return next => next();
+  check(next) {
+    next();
   }
 
   static #getModelFields(id) {
@@ -293,7 +293,7 @@ module.exports.Model = class {
             const instance = new field.type();
             const fieldSchema = new Schema({}, { timestamps: true });
 
-            fieldSchema.pre("save", instance.check);
+            fieldSchema.pre("validate", instance.check);
             thisFields = getFields(instance, fieldSchema);
 
             fieldSchema.add(thisFields);
@@ -317,7 +317,18 @@ module.exports.Model = class {
                 type: field.isArray ? [type] : type,
                 default: field.def,
                 required: field.isRequire,
-                check: field.check,
+                check: (next, path, value, model) => {
+                  if (!!field.multi) {
+                    const uniqueValue = [];
+                    for (const v of value) {
+                      if (!uniqueValue.includes(v)) {
+                        uniqueValue.push(v);
+                      }
+                    }
+                    model[path] = uniqueValue;
+                  }
+                  field.check ? field.check(next, path, value, model) : next().bind(model);
+                },
                 enum: field.keys,
               };
 

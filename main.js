@@ -169,14 +169,12 @@ startDatabase().then(async () => {
       type: String,
     });
 
-    get check() {
-      return function (next) {
-        if (!this.typeCheck("WORKER")) {
-          this.type.push("WORKER");
-        }
-
-        next();
+    check(next) {
+      if (!this.typeCheck("WORKER")) {
+        this.type.push("WORKER");
       }
+
+      next();
     }
   }
 
