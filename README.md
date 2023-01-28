@@ -58,14 +58,14 @@ OR
 
 <pre>
 const { Enum } = require("mongoosejs-model");
-<b>const enum1 = Object.freeze({
+<b>const EConst1 = Object.freeze({
   E1: "E1",
   E2: "E2",
 });</b>
 let field1 = new Enum({
   multi: false,
   default: "E1",
-  <b>type: enum1</b>,
+  <b>type: EConst1</b>,
 });
 </pre>
 
