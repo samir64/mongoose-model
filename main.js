@@ -22,7 +22,7 @@ const startDatabase = () => {
 
 startDatabase().then(async () => {
   // class Model1 extends Model {
-  //   var4 = new Field({ type: String, def: "var4-val" });
+  //   var4 = new Field({ type: String, default: "var4-val" });
   //   var5 = new Field({ type: Number, isArray: true });
 
   //   #var1 = "123";
@@ -47,7 +47,7 @@ startDatabase().then(async () => {
   //   }
 
   //   var6 = new Field({
-  //     type: String, def: "var6-val", check: data => {
+  //     type: String, default: "var6-val", check: data => {
   //       console.log("Check for sub document's field", data);
   //       next();
   //     }
@@ -110,8 +110,9 @@ startDatabase().then(async () => {
     }
 
     gender = new Enum({
-      def: "MALE",
+      default: "MALE",
       keys: ["MALE", "FEMALE"],
+      type: { MALE: "MALE", FEMALE: "FEMALE" },
       multi: false
     });
 

@@ -38,7 +38,7 @@ const { Field } = require("mongoosejs-model");
 let field1 = new Field({
   isRequire: true,
   isArray: true,
-  def: ["test"],
+  default: ["test"],
   type: String,
 });
 ```
@@ -49,16 +49,31 @@ let field1 = new Field({
 const { Enum } = require("mongoosejs-model");
 let field1 = new Enum({
   multi: false,
-  def: "E1",
+  default: "E1",
   keys: ["E1", "E2"],
 });
 ```
+
+OR
+
+<pre>
+const { Enum } = require("mongoosejs-model");
+<b>const enum1 = Object.freeze({
+  E1: "E1",
+  E2: "E2",
+});</b>
+let field1 = new Enum({
+  multi: false,
+  default: "E1",
+  type: enum1,
+});
+</pre>
 
 ```
 const { Enum } = require("mongoosejs-model");
 let field2 = new Enum({
   multi: true,
-  def: ["E1"],
+  default: ["E1"],
   keys: ["E1", "E2"],
 });
 ```

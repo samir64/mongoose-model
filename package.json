@@ -1,6 +1,6 @@
 {
   "name": "mongoosejs-model",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Define mongodb schema and documents by object oriented structure",
   "main": "index.js",
   "scripts": {

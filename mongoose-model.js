@@ -133,7 +133,7 @@ module.exports.Field = class {
   #value;
   #check;
 
-  constructor({ isRequire, isUnique, def, type, isArray, check } = {}) {
+  constructor({ isRequire, isUnique, default: def, type, isArray, check } = {}) {
     if (![String, Number, Boolean, Date, Schema.Types.ObjectId, Object].includes(type) && !!type && !(type.prototype instanceof module.exports.Model)) {
       throw "type_error";
     }
@@ -199,7 +199,11 @@ module.exports.Field = class {
 module.exports.Enum = class extends this.Field {
   #keys = [];
 
-  constructor({ def, multi, keys, check } = {}) {
+  constructor({ def, multi, type, keys, check } = {}) {
+    if (typeof type === "object") {
+      keys = Object.values(type);
+    }
+
     super({
       isRequire: true,
       def: !!multi ? (def ?? []) : def,
