@@ -65,7 +65,7 @@ const { Enum } = require("mongoosejs-model");
 let field1 = new Enum({
   multi: false,
   default: "E1",
-  type: enum1,
+  <b>type: enum1</b>,
 });
 </pre>
 
