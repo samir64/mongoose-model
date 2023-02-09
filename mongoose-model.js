@@ -324,14 +324,14 @@ module.exports.Model = class {
                 check: (next, path, value, model) => {
                   if (!!field.multi) {
                     const uniqueValue = [];
-                    for (const v of value) {
+                    for (const v of value ?? []) {
                       if (!uniqueValue.includes(v)) {
                         uniqueValue.push(v);
                       }
                     }
                     model[path] = uniqueValue;
                   }
-                  field.check ? field.check(next, path, value, model) : next().bind(model);
+                  field.check ? field.check(next, path, value, model) : next.bind(model)();
                 },
                 enum: field.keys,
               };
@@ -374,9 +374,11 @@ module.exports.Model = class {
 
     const load = () => {
       const schema = new Schema({}, { timestamps: true });
-      thisFields = getFields(new this(), schema);
+      const instance = new this();
+      thisFields = getFields(instance, schema);
 
       schema.add(thisFields);
+      schema.pre("validate", instance?.check ?? (next => next()));
 
       checkFields(schema, thisFields);
 

@@ -118,7 +118,7 @@ startDatabase().then(async () => {
 
     type = new Enum({
       multi: true,
-      keys: ["WORKER", "EMPLOYER"]
+      keys: ["EMPLOYEE", "EMPLOYER"]
     })
 
     firstName = new Field({
@@ -138,7 +138,9 @@ startDatabase().then(async () => {
       check: async (next, path, value, model) => {
         const lastCnt = await Person.collection.findOne({}, { cnt: 1 }, { sort: { cnt: -1 } }) ?? { cnt: 0 };
         console.log(path, value, lastCnt.cnt);
-        model.cnt = lastCnt.cnt + 1;
+        if (!!model.isNew) {
+          model.cnt = lastCnt.cnt + 1;
+        }
         next();
       },
     });
@@ -152,7 +154,7 @@ startDatabase().then(async () => {
 
       sort(agrPerson, "-lastName");
       filter(agrPerson, {
-        "firstName|lastName": "Onj|and",
+        "firstName|lastName": "san|chal",
       });
       paginate(agrPerson, 0, 10);
       return agrPerson.exec();
@@ -170,9 +172,13 @@ startDatabase().then(async () => {
       type: String,
     });
 
+    get jobType() {
+      return Worker;
+    };
+
     check(next) {
-      if (!this.typeCheck("WORKER")) {
-        this.type.push("WORKER");
+      if (!this.typeCheck("EMPLOYEE")) {
+        this.type.push("EMPLOYEE");
       }
 
       next();
@@ -190,18 +196,155 @@ startDatabase().then(async () => {
   //   firstName: "hasan",
   //   lastName: "kachal",
   //   job: "kilid saaz",
-  //   type: ["EMPLOYER"]
+  //   gender: "MALE",
+  //   // type: ["EMPLOYER"]
   // });
-  const model = await Worker.collection.findOne({ _id: "63d2c59c2cd234cbcbee13b8" });
-  const res = await model.save();
-  console.log(res.fullName);
+  // // const model = await Worker.collection.findOne({ cnt: 4 });
+  // const res = await model.save();
+  // console.log(res.fullName, res.jobType);
 
-  console.log("Gender Value:", res.gender);
-  console.log("Gender Has Key 'FEMALE':", res.genderHasKey("FEMALE"));
-  console.log("Gender Check 'FEMALE': ", res.genderCheck("FEMALE"));
-  console.log("Gender Compare 'FEMALE': ", res.genderCompare("FEMALE"));
+  // console.log("Gender Value:", res.gender);
+  // console.log("Gender Has Key 'FEMALE':", res.genderHasKey("FEMALE"));
+  // console.log("Gender Check 'FEMALE': ", res.genderCheck("FEMALE"));
+  // console.log("Gender Compare 'FEMALE': ", res.genderCompare("FEMALE"));
 
-  const result = await Person.getAllPersons();
-  const { items: list, ...info } = result[0];
-  console.log(info, list.map(item => item.firstName + " " + item.lastName));
+  // const result = await Person.getAllPersons();
+  // const { items: list, ...info } = result?.[0] ?? { items: [] };
+  // console.log(info, list.map(item => item.firstName + " " + item.lastName));
+
+
+
+
+
+
+
+  const EEngine = Object.freeze({
+    ELECTRIC: "ELECTRIC",
+    GAS: "GAS",
+    GASOLINE: "GASOLINE",
+    HYBRID: "HYBRID",
+  });
+
+  class Vehicle extends Model {
+    color = new Field({ isRequire: true, type: String });
+    width = new Field({ isRequire: true, type: Number });
+    length = new Field({ isRequire: true, type: Number });
+    height = new Field({ isRequire: true, type: Number });
+    engineType = new Enum({ type: EEngine });
+  }
+
+  class LandVehicleInfo extends Model {
+    wheels = new Field({ isRequier: true, type: Number });
+    doors = new Field({ isRequier: true, type: Number });
+  }
+
+  class WaterVehicleInfo extends Model {
+    floors = new Field({ isRequire: true, type: Number });
+    helipad = new Field({ default: false, type: Boolean });
+  }
+
+  class ElectricEngine extends Vehicle {
+    batteryCapacity = new Field({ isRequire: true, type: Number });
+
+    check(next) {
+      this.engineType = EEngine.ELECTRIC;
+      next();
+    }
+  }
+
+  class GasEngine extends Vehicle {
+    fuelCapacity = new Field({ isRequire: true, type: Number });
+
+    check(next) {
+      this.engineType = EEngine.GAS;
+      next();
+    }
+  }
+
+  class GasolineEngine extends Vehicle {
+    fuelCapacity = new Field({ isRequire: true, type: Number });
+
+    check(next) {
+      this.engineType = EEngine.GASOLINE;
+      next();
+    }
+  }
+
+  class HybridEngine extends Vehicle {
+    fuelCapacity = new Field({ isRequire: true, type: Number });
+    batteryCapacity = new Field({ isRequire: true, type: Number });
+
+    check(next) {
+      this.engineType = EEngine.HYBRID;
+      next();
+    }
+  }
+
+  class ElectricBycicle extends ElectricEngine {
+    static get modelName() {
+      return "landVehicle";
+    }
+
+    vehicleInfo = new Field({ isRequire: true, type: LandVehicleInfo });
+  }
+
+  class SedanCar extends GasEngine {
+    static get modelName() {
+      return "landVehicle";
+    }
+
+    vehicleInfo = new Field({ isRequire: true, type: LandVehicleInfo });
+  }
+
+  class HybridVan extends HybridEngine {
+    static get modelName() {
+      return "landVehicle";
+    }
+
+    vehicleInfo = new Field({ isRequire: true, type: LandVehicleInfo });
+  }
+
+  class Truck extends GasolineEngine {
+    static get modelName() {
+      return "landVehicle";
+    }
+
+    vehicleInfo = new Field({ isRequire: true, type: LandVehicleInfo });
+  }
+
+  class Boat extends GasolineEngine {
+    static get modelName() {
+      return "waterVehicle";
+    }
+
+    vehicleInfo = new Field({ isRequire: true, type: WaterVehicleInfo });
+  }
+
+  const bycicle1 = ElectricBycicle.create({
+    color: "white",
+    width: 20,
+    length: 100,
+    height: 95,
+    batteryCapacity: 100000,
+    vehicleInfo: {
+      wheels: 2,
+      doors: 0,
+    },
+  });
+
+  const boat1 = Boat.create({
+    color: "red",
+    width: 20,
+    length: 100,
+    height: 95,
+    batteryCapacity: 100000,
+    fuelCapacity: 200,
+    vehicleInfo: {
+      floors: 1,
+      doors: 0,
+    },
+  });
+
+  await bycicle1.save();
+  await boat1.save();
 });

@@ -142,6 +142,112 @@ class Person extends Model {
 }
 </pre>
 
+### Inheritance models
+
+<pre>
+const EEngine = Object.freeze({
+  ELECTRIC: "ELECTRIC",
+  GAS: "GAS",
+  GASOLINE: "GASOLINE",
+  HYBRID: "HYBRID",
+});
+
+class Vehicle extends Model {
+  color = new Field({ isRequire: true, type: String });
+  width = new Field({ isRequire: true, type: Number });
+  length = new Field({ isRequire: true, type: Number });
+  height = new Field({ isRequire: true, type: Number });
+  engineType = new Enum({ type: EEngine });
+}
+
+class LandVehicleInfo extends Model {
+  wheels = new Field({ isRequier: true, type: Number });
+  doors = new Field({ isRequier: true, type: Number });
+}
+
+class WaterVehicleInfo extends Model {
+  floors = new Field({ isRequire: true, type: Number });
+  helipad = new Field({ default: false, type: Boolean });
+}
+
+class ElectricEngine extends Vehicle {
+  batteryCapacity = new Field({ isRequire: true, type: Number });
+
+  check(next) {
+    this.engineType = EEngine.ELECTRIC;
+    next();
+  }
+}
+
+class GasEngine extends Vehicle {
+  fuelCapacity = new Field({ isRequire: true, type: Number });
+
+  check(next) {
+    this.engineType = EEngine.GAS;
+    next();
+  }
+}
+
+class GasolineEngine extends Vehicle {
+  fuelCapacity = new Field({ isRequire: true, type: Number });
+
+  check(next) {
+    this.engineType = EEngine.GASOLINE;
+    next();
+  }
+}
+
+class HybridEngine extends Vehicle {
+  fuelCapacity = new Field({ isRequire: true, type: Number });
+  batteryCapacity = new Field({ isRequire: true, type: Number });
+
+  check(next) {
+    this.engineType = EEngine.HYBRID;
+    next();
+  }
+}
+
+class ElectricBycicle extends ElectricEngine {
+  static get modelName() {
+    return "landVehicle";
+  }
+
+  vehicleInfo = new Field({ isRequire: true, type: LandVehicleInfo });
+}
+
+class SedanCar extends GasEngine {
+  static get modelName() {
+    return "landVehicle";
+  }
+
+  vehicleInfo = new Field({ isRequire: true, type: LandVehicleInfo });
+}
+
+class HybridVan extends HybridEngine {
+  static get modelName() {
+    return "landVehicle";
+  }
+
+  vehicleInfo = new Field({ isRequire: true, type: LandVehicleInfo });
+}
+
+class Truck extends GasolineEngine {
+  static get modelName() {
+    return "landVehicle";
+  }
+
+  vehicleInfo = new Field({ isRequire: true, type: LandVehicleInfo });
+}
+
+class Boat extends GasolineEngine {
+  static get modelName() {
+    return "waterVehicle";
+  }
+
+  vehicleInfo = new Field({ isRequire: true, type: WaterVehicleInfo });
+}
+</pre>
+
 
 ### Define virtual fields
 
