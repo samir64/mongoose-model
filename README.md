@@ -246,6 +246,34 @@ class Boat extends GasolineEngine {
 
   vehicleInfo = new Field({ isRequire: true, type: WaterVehicleInfo });
 }
+
+<b>const bycicle1 = ElectricBycicle.create({
+  color: "white",
+  width: 20,
+  length: 100,
+  height: 95,
+  batteryCapacity: 100000,
+  vehicleInfo: {
+    wheels: 2,
+    doors: 0,
+  },
+});
+
+const boat1 = Boat.create({
+  color: "red",
+  width: 20,
+  length: 100,
+  height: 95,
+  batteryCapacity: 100000,
+  fuelCapacity: 200,
+  vehicleInfo: {
+    floors: 1,
+    doors: 0,
+  },
+});
+
+await bycicle1.save();
+await boat1.save();</b>
 </pre>
 
 
