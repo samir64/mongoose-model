@@ -264,7 +264,6 @@ const boat1 = Boat.create({
   width: 20,
   length: 100,
   height: 95,
-  batteryCapacity: 100000,
   fuelCapacity: 200,
   vehicleInfo: {
     floors: 1,
